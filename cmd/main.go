@@ -8,8 +8,8 @@ import (
 	"syscall"
 
 	"github.com/nsaltun/landlord-api/internal/handler"
-	"github.com/nsaltun/landlord-api/logging"
 	"github.com/nsaltun/landlord-api/pkg/httpwrap"
+	"github.com/nsaltun/landlord-api/pkg/logging"
 	"github.com/nsaltun/landlord-api/pkg/middlewares"
 )
 
