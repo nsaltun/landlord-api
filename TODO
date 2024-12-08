@@ -1,0 +1,39 @@
+500m2 0.8 emsal 1.3 katsayı
+
+500*0.8*1.3= 520m2 (toplam inşaat alanı)
+
+520/35 =>(min m2) küsüratlı gelirse aşağı yuvarla. Toplam inşaat alanını aşağı yuvarlanmış daire sayısına böl ve onu dön.
+
+520/45 =>(max m2) 
+    - küsüratlı gelirse yukarı yuvarla. 
+        - 10.5 gelirse 11'e yuvarlayıp 520/11 = "x metrekare 11 tane daire çıkar" diye sonuç dön 
+    - Toplam inşaat alanını aşağı yuvarlanmış daire sayısına bölüp daire başına toplam kaç m2 olduğunu hesapla.
+        - 10.5 geldiğinde 10'a yuvarlayıp 520/10= "x metrekare 10 tane daire çıkar" diye sonuç dön.
+
+
+
+Response:
+    struct:
+        []oneplusone{count, flatSize}
+
+Örnek response:
+    {
+        OnePlusOne:[]{
+            {
+                flatSize:36m2
+                count: 12
+            },
+            {
+                flatSize:47m2
+                count: 10
+            }
+        }
+    }
+
+
+    1+1 array:
+        x tane >~35 m2
+        x tane <~45 m2
+    
+    
+    
