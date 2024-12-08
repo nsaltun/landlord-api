@@ -11,6 +11,8 @@ import (
 const (
 	MaxOnePlusOneSquareMeter = 45
 	MinOnePlusOneSquareMeter = 35
+	MaxTwoPlusOneSquareMeter = 100
+	MinTwoPlusOneSquareMeter = 60
 )
 
 type LandCalculation interface {
@@ -34,7 +36,7 @@ func (l *landCalculation) HandleFieldCalculation(ctx *middlewares.HttpContext) {
 
 	resp := &model.CalculationResponse{
 		OnePlusOneCount: CalculateOnePlusOneCount(req.LandSquareMeter, req.Emsal, req.ExtendFactor),
-		// TwoPlusOneCount:   12,
+		TwoPlusOneCount: CalculateTwoPlusOneCount(req.LandSquareMeter, req.Emsal, req.ExtendFactor),
 		// ThreePlusOneCount: 8,
 	}
 	ctx.JSON(http.StatusOK, resp)
@@ -52,7 +54,7 @@ func CalculateOnePlusOneCount(landSquareMeter float64, emsal float64, extendFact
 		countMin = math.Floor(countMin)
 		flatSizeMin = netConstructionArea / countMin
 	}
-	flats = append(flats, model.Flat{Count: int(countMin), Size: flatSizeMin})
+	flats = append(flats, model.Flat{Count: int(countMin), Size: math.Round(flatSizeMin)})
 
 	//Calculate max size flats
 	countMax := netConstructionArea / float64(MaxOnePlusOneSquareMeter)
@@ -63,7 +65,7 @@ func CalculateOnePlusOneCount(landSquareMeter float64, emsal float64, extendFact
 		flatSizeCeil := netConstructionArea / countCeil
 		flats = append(flats, model.Flat{
 			Count: int(countCeil),
-			Size:  flatSizeCeil,
+			Size:  math.Round(flatSizeCeil),
 		})
 
 		//Calculate by floor
@@ -71,13 +73,57 @@ func CalculateOnePlusOneCount(landSquareMeter float64, emsal float64, extendFact
 		flatSizeFloor := netConstructionArea / countFloor
 		flats = append(flats, model.Flat{
 			Count: int(countFloor),
-			Size:  flatSizeFloor,
+			Size:  math.Round(flatSizeFloor),
 		})
 
 	} else {
 		flats = append(flats, model.Flat{
 			Count: int(math.Ceil(countMax)),
-			Size:  float64(MaxOnePlusOneSquareMeter),
+			Size:  math.Round(float64(MaxOnePlusOneSquareMeter)),
+		})
+	}
+
+	return flats
+}
+
+func CalculateTwoPlusOneCount(landSquareMeter float64, emsal float64, extendFactor float64) []model.Flat {
+	netConstructionArea := landSquareMeter * emsal * extendFactor
+
+	flats := []model.Flat{}
+	//Calculate min size flats
+	flatSizeMin := float64(MinTwoPlusOneSquareMeter)
+	countMin := netConstructionArea / flatSizeMin
+	if !isExactInteger(countMin) {
+		//Daire sayısını net olarak dönmek istediğimiz için daire başına m2 yi yükseltiyoruz burada
+		countMin = math.Floor(countMin)
+		flatSizeMin = netConstructionArea / countMin
+	}
+	flats = append(flats, model.Flat{Count: int(countMin), Size: math.Round(flatSizeMin)})
+
+	//Calculate max size flats
+	countMax := netConstructionArea / float64(MaxTwoPlusOneSquareMeter)
+	//Daire sayısını artırıyoruz sayıyı virgüllü dönmek istemediğimiz için
+	if !isExactInteger(countMax) {
+		//Calculate by ceil
+		countCeil := math.Ceil(countMax)
+		flatSizeCeil := netConstructionArea / countCeil
+		flats = append(flats, model.Flat{
+			Count: int(countCeil),
+			Size:  math.Round(flatSizeCeil),
+		})
+
+		//Calculate by floor
+		countFloor := math.Floor(countMax)
+		flatSizeFloor := netConstructionArea / countFloor
+		flats = append(flats, model.Flat{
+			Count: int(countFloor),
+			Size:  math.Round(flatSizeFloor),
+		})
+
+	} else {
+		flats = append(flats, model.Flat{
+			Count: int(math.Ceil(countMax)),
+			Size:  float64(MaxTwoPlusOneSquareMeter),
 		})
 	}
 

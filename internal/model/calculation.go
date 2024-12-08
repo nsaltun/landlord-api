@@ -2,8 +2,8 @@ package model
 
 type CalculationResponse struct {
 	OnePlusOneCount   []Flat
-	TwoPlusOneCount   int
-	ThreePlusOneCount int
+	TwoPlusOneCount   []Flat
+	ThreePlusOneCount []Flat
 }
 
 type CalculationRequest struct {
